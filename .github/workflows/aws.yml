@@ -42,12 +42,10 @@ jobs:
     
     - name: Build and publish
       run: |
-        # Add this to see what files we have
-        ls -la
-        # Build and publish
+        cd EventManagement
         dotnet restore
-        dotnet publish -c Release -o ./publish
-        # Check what was published
+        dotnet publish -c Release -o ../publish
+        cd ..
         ls -la ./publish
     
     - name: Deploy to EC2
