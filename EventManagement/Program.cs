@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
-
+// attempt to get this fucking workflow to work just adding this for the commit trigger
 // Add services to the container.
 builder.Services.AddControllers();
 
