@@ -45,17 +45,30 @@ public class EventsController : ControllerBase
         }
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
+    {
+        try
+        {
+            var events = await _context.Events.ToListAsync();
+            return Ok(events);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving events");
+            return StatusCode(500, "An error occurred while retrieving events");
+        }
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Event>> GetEvent(Guid id)
     {
         var eventItem = await _context.Events.FindAsync(id);
-
         if (eventItem == null)
         {
             _logger.LogWarning("Event not found with ID: {EventId}", id);
             return NotFound();
         }
-
         return eventItem;
     }
 }
