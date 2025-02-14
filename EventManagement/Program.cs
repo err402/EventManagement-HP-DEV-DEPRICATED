@@ -3,26 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://0.0.0.0:44386");
+// We'll use nginx to handle the port forwarding, so we'll use localhost here
+builder.WebHost.UseUrls("http://localhost:44386");
 
-// Add CORS configuration before other middleware
+// Updated CORS configuration for deployment
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:4200",
-                "http://10.0.0.113:4200"  // Explicitly allow your IP
-            )
-            .SetIsOriginAllowed(origin => 
-                    origin.StartsWith("http://10.0.0.") && origin.EndsWith(":4200") // For any other IPs in your subnet
-            )
+        policy
+            .SetIsOriginAllowed(_ => true) // During testing, allow all origins
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
 });
-// attempt to get this fucking workflow to work just adding this for the commit trigger
-//test...
+
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -38,17 +33,14 @@ var app = builder.Build();
 // Add CORS middleware before other middleware
 app.UseCors("AllowAngular");
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-// Comment out HTTPS redirection since we're using HTTP
-// app.UseHttpsRedirection();
+// Enable Swagger in production temporarily for testing
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthorization();
 app.MapControllers();
+
+// Add a health check endpoint
+app.MapGet("/health", () => "Healthy");
 
 app.Run();
