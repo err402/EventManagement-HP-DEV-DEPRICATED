@@ -5,6 +5,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add Reverse Proxy
+builder.Services.AddHealthChecks();
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
@@ -19,7 +20,7 @@ if (app.Environment.IsDevelopment())
 
 // Comment out HTTPS redirection for now
 //app.UseHttpsRedirection();
-
+app.MapHealthChecks("/health");
 // Map reverse proxy routes
 app.MapReverseProxy();
 
