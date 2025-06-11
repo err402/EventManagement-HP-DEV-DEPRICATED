@@ -1,4 +1,4 @@
-# Event Management API
+# Event Management API (DEPRICATED ARCHITECTURE MOVED TO GO)
 
 A microservices-based .NET Core Event Management API deployed on AWS, providing a scalable backend for event creation and management.
 
